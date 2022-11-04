@@ -7,17 +7,20 @@ public class TaskList {
     public TaskList() {
         this.taskMap = new LinkedHashMap<>();
     }
-    public void addTask(Planner planner) throws LineNotFilled{
-        if(taskMap.containsKey(planner.getId())){
+
+    public void addTask(Planner planner) throws LineNotFilled {
+        if (taskMap.containsKey(planner.getId())) {
             throw new RuntimeException("Введённая задача уже существует");
-        }else {
+        } else {
             taskMap.put(planner.getId(), planner);
         }
     }
-    public void removeTask(int id){
+
+    public void removeTask(int id) {
         taskMap.remove(id);
     }
-    public void listOfTasks(){
+
+    public void listOfTasks() {
         for (Map.Entry<Integer, Planner> planner : taskMap.entrySet()) {
             System.out.println(planner);
         }

@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws LineNotFilled {
-        TaskList planner= new TaskList();
+        TaskList planner = new TaskList();
         try (Scanner scanner = new Scanner(System.in)) {
             label:
             while (true) {
@@ -21,7 +21,7 @@ public class Main {
                             enterTaskId(scanner, planner);
                             break;
                         case 3:
-                             listTasks(planner);
+                            listTasks(planner);
                             break;
                         case 0:
                             break label;
@@ -34,35 +34,35 @@ public class Main {
         }
     }
 
-    private static void inputTask(Scanner scanner, TaskList planner)throws LineNotFilled {
+    private static void inputTask(Scanner scanner, TaskList planner) throws LineNotFilled {
         System.out.print("Введите название задачи: ");
         String taskName = scanner.next();
-        System.out.println("Ведите опесание задачи: ");
-        String taskDescription= scanner.next();
-        System.out.println("Укажите тип задачи: \n");
+        System.out.print("Ведите опесание задачи: ");
+        String taskDescription = scanner.next();
+        System.out.println("Укажите тип задачи: ");
         System.out.println(
                 """
-                        P - личная,
-                        W - рабочая.
+                        1 - личная,
+                        2 - рабочая.
                         """);
-        TaskType type=TaskType.valueOf(scanner.next());
+        TaskType type = TaskType.getEnumFromConstant(Integer.parseInt(scanner.next()));
         System.out.println("Введите год-месяц-число час:минуты: ");
-        LocalDate date=LocalDate.parse(scanner.next());
-        LocalTime time=LocalTime.parse(scanner.next());
-        LocalDateTime dateTime=LocalDateTime.of(date, time);
+        LocalDate date = LocalDate.parse(scanner.next());
+        LocalTime time = LocalTime.parse(scanner.next());
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
         planner.addTask(new Planner(taskName, taskDescription, type, dateTime));
         System.out.println("Выберете повторяемость: ");
         System.out.println(
                 """
-                1. Однократно,
-                2. Ежедневно,
-                3. Еженедельно,
-                4. Ежемесячно,
-                5. Ежегодно.
-                """);
-        int repeatability=scanner.nextInt();
-        Repeatability repeatability1=new Planner(taskName, taskDescription, type, dateTime);
-        switch (repeatability){
+                        1. Однократно,
+                        2. Ежедневно,
+                        3. Еженедельно,
+                        4. Ежемесячно,
+                        5. Ежегодно.
+                        """);
+        int repeatability = scanner.nextInt();
+        Repeatability repeatability1 = new Planner(taskName, taskDescription, type, dateTime);
+        switch (repeatability) {
             case 1 -> repeatability1.getOneTime();
             case 2 -> repeatability1.getDaily();
             case 3 -> repeatability1.getWeekly();
@@ -70,11 +70,13 @@ public class Main {
             case 5 -> repeatability1.getAnnual();
         }
     }
+
     private static void enterTaskId(Scanner scanner, TaskList planner) {
         System.out.println("Введите номер ID: ");
-        int id= scanner.nextInt();
+        int id = scanner.nextInt();
         planner.removeTask(id);
     }
+
     private static void listTasks(TaskList planner) {
         System.out.println("Список задач на день: ");
         planner.listOfTasks();

@@ -1,13 +1,18 @@
 public enum TaskType {
-    P ("Личная"),
-    W ("Рабочая");
-    public final String type;
+    EMPTY(0),
+    PERSONAL(1),
+    WORK(2);
+    private final int taskType;
 
-    TaskType(String type) {
-        this.type = type;
+    TaskType(int taskType) {
+        this.taskType = taskType;
     }
 
-    public String getType() {
-        return type;
+    public int getTaskType() {
+        return taskType;
+    }
+
+    public static TaskType getEnumFromConstant(int i) {
+        return values()[i];
     }
 }
