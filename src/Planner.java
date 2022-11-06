@@ -1,24 +1,24 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Planner implements Repeatability {
     private String heading;
     private String description;
-    private TaskType type;
+    private final TaskType type;
     private LocalDateTime creationTime;
-    int id;
+    private final int id;
     private static int counterId = 0;
+    private final Replay replay;
 
-    public Planner(String heading, String description, TaskType type, LocalDateTime creationTime, int id) {
+    public Planner(String heading, String description, TaskType type,
+                   LocalDateTime creationTime, Replay replay) throws LineNotFilled {
         this.heading = heading;
         this.description = description;
         this.type = type;
         this.creationTime = creationTime;
+        this.replay = replay;
         this.id = counterId++;
-    }
-
-    public Planner(String taskName, String taskDescription, TaskType type, LocalDateTime dateTime) {
-
     }
 
     public String getHeading() {
@@ -26,8 +26,8 @@ public class Planner implements Repeatability {
     }
 
     public void setHeading(String heading) throws LineNotFilled {
-        if (heading == null || description.isBlank()) {
-            throw new LineNotFilled("Введите заголовок.");
+        if (heading == null || heading.isBlank()) {
+            throw new LineNotFilled("Введите заголовок: ");
         } else {
             this.heading = heading;
         }
@@ -39,7 +39,7 @@ public class Planner implements Repeatability {
 
     public void setDescription(String description) throws LineNotFilled {
         if (description == null || description.isBlank()) {
-            throw new LineNotFilled("Введите описание.");
+            throw new LineNotFilled("Введите описание: ");
         } else {
             this.description = description;
         }
@@ -57,29 +57,37 @@ public class Planner implements Repeatability {
         return id;
     }
 
-    @Override
-    public void getOneTime() {
-        System.out.println(Repeatability.ONE_TIME + "Однократно.");
+    public static int getCounterId() {
+        return counterId;
     }
 
-    @Override
-    public void getDaily() {
-        System.out.println("Ежедневно.");
+    public Replay getReplay() {
+        return replay;
     }
 
-    @Override
-    public void getWeekly() {
-        System.out.println("Еженедельно.");
-    }
-
-    @Override
-    public void getMonthly() {
-        System.out.println("Ежемесячно.");
-    }
-
-    @Override
-    public void getAnnual() {
-        System.out.println("Ежегодно.");
+    public boolean time(LocalDate localDate) {
+        switch (replay) {
+            case ONE_TIME:
+                return creationTime.toLocalDate().isEqual(localDate);
+            case DAILY:
+                return creationTime.toLocalDate().isBefore(localDate);
+            case WEEKLY:
+                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
+                    creationTime = creationTime.plusWeeks(1);
+                }
+                return creationTime.toLocalDate().isEqual(localDate);
+            case MONTHLY:
+                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
+                    creationTime = creationTime.plusMonths(1);
+                }
+                return creationTime.toLocalDate().isEqual(localDate);
+            case ANNUAL:
+                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
+                    creationTime = creationTime.plusYears(1);
+                }
+                return creationTime.toLocalDate().isEqual(localDate);
+        }
+        return false;
     }
 
     @Override
@@ -89,22 +97,21 @@ public class Planner implements Repeatability {
         Planner planner = (Planner) o;
         return id == planner.id && Objects.equals(heading, planner.heading) &&
                 Objects.equals(description, planner.description) &&
-                type == planner.type && Objects.equals(creationTime, planner.creationTime);
+                type == planner.type && Objects.equals(creationTime, planner.creationTime) &&
+                replay == planner.replay;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(heading, description, type, creationTime, id);
+        return Objects.hash(heading, description, type, creationTime, id, replay);
     }
 
-//    @Override
-//    public String toString() {
-//        return "Planner{" +
-//                "heading='" + heading + '\'' +
-//                ", description='" + description + '\'' +
-//                ", type=" + type +
-//                ", creationTime=" + creationTime +
-//                ", id=" + id +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "Заголовок: " + heading +
+                ", описание: " + description +
+                ", тип задания: " + type +
+                ", время: " + creationTime +
+                ", id номер: " + id + ".";
+    }
 }

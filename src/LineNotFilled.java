@@ -1,4 +1,4 @@
-public class LineNotFilled extends Exception {
+public class LineNotFilled extends Exception {  //Строка не заполнена
     public LineNotFilled() {
     }
 

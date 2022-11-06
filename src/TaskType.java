@@ -1,4 +1,4 @@
-public enum TaskType {
+public enum TaskType {        //Тип задачи
     EMPTY(0),
     PERSONAL(1),
     WORK(2);
@@ -12,7 +12,7 @@ public enum TaskType {
         return taskType;
     }
 
-    public static TaskType getEnumFromConstant(int i) {
+    public static TaskType getType(int i) {
         return values()[i];
     }
 }

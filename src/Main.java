@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws LineNotFilled {
-        TaskList planner = new TaskList();
+        TaskList dailyPlanner = new TaskList();
         try (Scanner scanner = new Scanner(System.in)) {
             label:
             while (true) {
@@ -15,13 +15,13 @@ public class Main {
                     int menu = scanner.nextInt();
                     switch (menu) {
                         case 1:
-                            inputTask(scanner, planner);
+                            inputTask(scanner, dailyPlanner);
                             break;
                         case 2:
-                            enterTaskId(scanner, planner);
+                            deleteTaskId(scanner, dailyPlanner);
                             break;
                         case 3:
-                            listTasks(planner);
+                            listTasks(dailyPlanner);
                             break;
                         case 0:
                             break label;
@@ -34,61 +34,78 @@ public class Main {
         }
     }
 
-    private static void inputTask(Scanner scanner, TaskList planner) throws LineNotFilled {
-        System.out.print("Введите название задачи: ");
-        String taskName = scanner.next();
-        System.out.print("Ведите опесание задачи: ");
-        String taskDescription = scanner.next();
-        System.out.println("Укажите тип задачи: ");
-        System.out.println(
-                """
-                        1 - личная,
-                        2 - рабочая.
-                        """);
-        TaskType type = TaskType.getEnumFromConstant(Integer.parseInt(scanner.next()));
-        System.out.println("Введите год-месяц-число час:минуты: ");
-        LocalDate date = LocalDate.parse(scanner.next());
-        LocalTime time = LocalTime.parse(scanner.next());
-        LocalDateTime dateTime = LocalDateTime.of(date, time);
-        planner.addTask(new Planner(taskName, taskDescription, type, dateTime));
-        System.out.println("Выберете повторяемость: ");
-        System.out.println(
-                """
-                        1. Однократно,
-                        2. Ежедневно,
-                        3. Еженедельно,
-                        4. Ежемесячно,
-                        5. Ежегодно.
-                        """);
-        int repeatability = scanner.nextInt();
-        Repeatability repeatability1 = new Planner(taskName, taskDescription, type, dateTime);
-        switch (repeatability) {
-            case 1 -> repeatability1.getOneTime();
-            case 2 -> repeatability1.getDaily();
-            case 3 -> repeatability1.getWeekly();
-            case 4 -> repeatability1.getMonthly();
-            case 5 -> repeatability1.getAnnual();
+    private static void inputTask(Scanner scanner, TaskList dailyPlanner) throws LineNotFilled {
+        try {
+            System.out.print("Введите название задачи: ");
+            String heading = scanner.next();
+            scanner.nextLine();
+            System.out.print("Ведите опесание задачи: ");
+            String description = scanner.nextLine();
+            System.out.println("Укажите тип задачи: ");
+            System.out.println(
+                    """
+                            1 - личная,
+                            2 - рабочая.
+                            """
+            );
+            int taskTypeNum = scanner.nextInt();
+            TaskType.getType(taskTypeNum);
+            System.out.println("Введите год-месяц-число час:минуты: ");
+            LocalDate date = LocalDate.parse(scanner.next());
+            LocalTime time = LocalTime.parse(scanner.next());
+            LocalDateTime dateTime = LocalDateTime.of(date, time);
+            System.out.println("Выберете повторяемость: ");
+            System.out.println(
+                    """
+                            1 - однократно,
+                            2 - ежедневно,
+                            3 - еженедельно,
+                            4 - ежемесячно,
+                            5 - ежегодно.
+                            """
+            );
+            int replay = scanner.nextInt();
+            Replay.getReplay(replay);
+            dailyPlanner.addTask(new Planner(heading, description, TaskType.getType(taskTypeNum),
+                    dateTime, Replay.getReplay(replay)));
+        } catch (LineNotFilled e) {
+            System.out.println("Введите полную информацию");
+            System.out.println(e.getMessage());
         }
+
     }
 
-    private static void enterTaskId(Scanner scanner, TaskList planner) {
-        System.out.println("Введите номер ID: ");
-        int id = scanner.nextInt();
-        planner.removeTask(id);
+    private static void deleteTaskId(Scanner scanner, TaskList dailyPlanner) {
+        try {
+            System.out.println("Введите номер ID: ");
+            int id = scanner.nextInt();
+            dailyPlanner.removeTask(id);
+        } catch (Exception e) {
+            System.out.println("Не правельный номер ID.");
+            System.out.println(e.getMessage());
+        }
+
     }
 
-    private static void listTasks(TaskList planner) {
+    private static void listTasks(TaskList dailyPlanner) {
         System.out.println("Список задач на день: ");
-        planner.listOfTasks();
+        dailyPlanner.listOfTasks();
     }
+
+    private static void listTasksDate(Scanner scanner, TaskList dailyPlanner) {
+        System.out.println("Список задач на указаную дату: ");
+        LocalDate localDate = LocalDate.parse(scanner.next());
+        System.out.println(dailyPlanner.getTasks(localDate));
+    }
+
 
     private static void printMenu() {
         System.out.println(
                 """
-                        1. Добавить задачу
-                        2. Удалить задачу
-                        3. Получить задачу на указанный день
-                        0. Выход
+                        1 - Добавить задачу
+                        2 - Удалить задачу
+                        3 - Получить задачу на указанный день
+                        0 - Выход
                         """
         );
 
