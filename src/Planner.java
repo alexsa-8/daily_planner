@@ -65,7 +65,7 @@ public class Planner implements Repeatability {
         return replay;
     }
 
-    public boolean time(LocalDate localDate) {
+    public boolean taskRepetitionRate(LocalDate localDate) {
         switch (replay) {
             case ONE_TIME:
                 return creationTime.toLocalDate().isEqual(localDate);

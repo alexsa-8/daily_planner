@@ -32,7 +32,7 @@ public class TaskList {          //Список задач
     public List<Planner> getTasks(LocalDate date) {
         List<Planner> list = new ArrayList<>();
         for (Integer integer : taskMap.keySet()) {
-            if (taskMap.get(integer).time(date)) {
+            if (taskMap.get(integer).taskRepetitionRate(date)) {
                 list.add(taskMap.get(integer));
             }
         }
