@@ -67,7 +67,12 @@ public class Main {
             int replay = scanner.nextInt();
             Replay.getReplay(replay);
             dailyPlanner.addTask(new Planner(heading, description, TaskType.getType(taskTypeNum),
-                    dateTime, Replay.getReplay(replay)));
+                    dateTime, Replay.getReplay(replay)) {
+                @Override
+                public boolean taskRepetitionRate(LocalDate localDate) {
+                    return false;
+                }
+            });
         } catch (LineNotFilled e) {
             System.out.println("Введите полную информацию");
             System.out.println(e.getMessage());

@@ -2,14 +2,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Planner implements Repeatability {
+public abstract class Planner implements Repeatability {
     private String heading;
     private String description;
     private final TaskType type;
-    private LocalDateTime creationTime;
+    private final LocalDateTime creationTime;
     private final int id;
     private static int counterId = 0;
-    private final Replay replay;
+    final Replay replay;
 
     public Planner(String heading, String description, TaskType type,
                    LocalDateTime creationTime, Replay replay) throws LineNotFilled {
@@ -65,30 +65,31 @@ public class Planner implements Repeatability {
         return replay;
     }
 
-    public boolean taskRepetitionRate(LocalDate localDate) {
-        switch (replay) {
-            case ONE_TIME:
-                return creationTime.toLocalDate().isEqual(localDate);
-            case DAILY:
-                return creationTime.toLocalDate().isBefore(localDate);
-            case WEEKLY:
-                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
-                    creationTime = creationTime.plusWeeks(1);
-                }
-                return creationTime.toLocalDate().isEqual(localDate);
-            case MONTHLY:
-                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
-                    creationTime = creationTime.plusMonths(1);
-                }
-                return creationTime.toLocalDate().isEqual(localDate);
-            case ANNUAL:
-                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
-                    creationTime = creationTime.plusYears(1);
-                }
-                return creationTime.toLocalDate().isEqual(localDate);
-        }
-        return false;
-    }
+    public abstract boolean taskRepetitionRate(LocalDate localDate);
+//    {
+//        switch (replay) {
+//            case ONE_TIME:
+//                return creationTime.toLocalDate().isEqual(localDate);
+//            case DAILY:
+//                return creationTime.toLocalDate().isBefore(localDate);
+//            case WEEKLY:
+//                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
+//                    creationTime = creationTime.plusWeeks(1);
+//                }
+//                return creationTime.toLocalDate().isEqual(localDate);
+//            case MONTHLY:
+//                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
+//                    creationTime = creationTime.plusMonths(1);
+//                }
+//                return creationTime.toLocalDate().isEqual(localDate);
+//            case ANNUAL:
+//                while (creationTime.toLocalDate().isBefore(localDate) && !creationTime.toLocalDate().isEqual(localDate)) {
+//                    creationTime = creationTime.plusYears(1);
+//                }
+//                return creationTime.toLocalDate().isEqual(localDate);
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean equals(Object o) {
