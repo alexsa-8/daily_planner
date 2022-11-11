@@ -10,14 +10,17 @@ public enum Replay {
 
 
     Replay(int replay) {
+
         this.replay = replay;
     }
 
     public int getReplay() {
+
         return replay;
     }
 
     public static Replay getReplay(int i) {
+
         return values()[i];
     }
 }

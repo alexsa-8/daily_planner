@@ -4,6 +4,8 @@ import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Main {
+
+
     public static void main(String[] args) throws LineNotFilled {
         TaskList dailyPlanner = new TaskList();
         try (Scanner scanner = new Scanner(System.in)) {
@@ -66,18 +68,23 @@ public class Main {
             );
             int replay = scanner.nextInt();
             Replay.getReplay(replay);
-            dailyPlanner.addTask(new Planner(heading, description, TaskType.getType(taskTypeNum),
-                    dateTime, Replay.getReplay(replay)) {
-                @Override
-                public boolean taskRepetitionRate(LocalDate localDate) {
-                    return false;
-                }
-            });
+            switch (replay) {
+                case 1 -> dailyPlanner.addTask(new OneTime(heading, description, TaskType.getType(taskTypeNum),
+                        dateTime, Replay.getReplay(replay)));
+                case 2 -> dailyPlanner.addTask(new Daily(heading, description, TaskType.getType(taskTypeNum),
+                        dateTime, Replay.getReplay(replay)));
+                case 3 -> dailyPlanner.addTask(new Weekly(heading, description, TaskType.getType(taskTypeNum),
+                        dateTime, Replay.getReplay(replay)));
+                case 4 -> dailyPlanner.addTask(new Monthly(heading, description, TaskType.getType(taskTypeNum),
+                        dateTime, Replay.getReplay(replay)));
+                case 5 -> dailyPlanner.addTask(new Annual(heading, description, TaskType.getType(taskTypeNum),
+                        dateTime, Replay.getReplay(replay)));
+                default -> throw new IllegalStateException("Unexpected value: " + replay);
+            }
         } catch (LineNotFilled e) {
             System.out.println("Введите полную информацию");
             System.out.println(e.getMessage());
         }
-
     }
 
     private static void deleteTaskId(Scanner scanner, TaskList dailyPlanner) {
